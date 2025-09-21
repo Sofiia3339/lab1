@@ -2,39 +2,56 @@
 
 #include "Functional_Object.h"
 #include <fstream>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <stdexcept>
 
-void readFromFile(int& n, pair<double, double>& x, vector<pair<double, double>>& numbers) {
-    ifstream file("input.txt");
+void readFromFile(int& n, std::pair<double, double>& x, std::vector<std::pair<double, double>>& numbers) {
+    std::ifstream file("input.txt");
     if (!file) {
-        cout << "Unable to open file input.txt" << endl;
-        return;
+        throw std::runtime_error("Unable to open input.txt");
     }
-    file >> n >> x.first >> x.second;
-    pair<int, int> num;
+
+    if (!(file >> n >> x.first >> x.second)) {
+        throw std::runtime_error("Invalid format in input.txt");
+    }
+
+    std::pair<double, double> num;
     while (file >> num.first >> num.second) {
         numbers.push_back(num);
     }
-    file.close();
+
+    if (numbers.empty()) {
+        throw std::runtime_error("No base points found in input.txt");
+    }
 }
 
 int main() {
-    int n;
-    pair<double, double> x;
-    vector<pair<double, double>> numbers;
-    readFromFile(n, x, numbers);
-    Functional_Object obj = Functional_Object(x, numbers);
-    ofstream file("output.txt");
-    if (!file) {
-        cout << "Unable to open file output.txt" << endl;
-    } else {
-        file << obj.getX().first << " " << obj.getX().second << endl;
-        pair<double, double> y;
-        for (int i = 1; i < n; i++) {
-            y = obj();
-            file << y.first << " " << y.second << endl;
+    try {
+        int n;
+        std::pair<double, double> x;
+        std::vector<std::pair<double, double>> numbers;
+
+        readFromFile(n, x, numbers);
+
+        Functional_Object obj(x, numbers);
+
+        std::ofstream file("output.txt");
+        if (!file) {
+            throw std::runtime_error("Unable to open output.txt");
         }
-        file.close();
-        cout << "Closed successfully" << endl;
+
+        file << obj.getX().first << " " << obj.getX().second << std::endl;
+        for (int i = 1; i < n; i++) {
+            auto y = obj();
+            file << y.first << " " << y.second << std::endl;
+        }
+
+        std::cout << "Program completed successfully." << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
+
+    return EXIT_SUCCESS;
 }
