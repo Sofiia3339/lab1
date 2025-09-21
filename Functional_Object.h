@@ -1,8 +1,21 @@
-//
-// Created by Sofiia Soboleva on 21.09.2025.
-//
+ #pragma once
+#include <iostream>
+#include <vector>
+#include <random>
+#include <utility>
+using namespace std;
 
-#ifndef FUNCTIONAL_OBJECT_H
-#define FUNCTIONAL_OBJECT_H
+class Functional_Object {
+private:
+    pair<double, double> x0;
+    vector<pair<double,double>> arrb;
+    int count = 0;
 
-#endif //FUNCTIONAL_OBJECT_H
+public:
+    Functional_Object(pair<double, double>& x0, vector<pair<double,double>>& arrb);
+    ~Functional_Object() = default;
+
+    pair<double, double> getX();
+    pair<double, double> operator()();
+};
+
