@@ -14,7 +14,7 @@ std::pair<double,double> Functional_Object::getX(){
 
 std::pair<double,double> Functional_Object::operator()()
 {
-    // Статичні об'єкти, що ініціалізуються один раз
+
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, arrb.size() - 1);
